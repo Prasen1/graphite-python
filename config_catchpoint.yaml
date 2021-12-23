@@ -1,0 +1,17 @@
+client_id :  ''
+client_secret : ''
+refresh_token : 'None'
+protocol : 'https'
+domain : 'io.catchpoint.com/ui/api'
+token_endpoint: 'token'
+version : 'v1'
+rawdata_endpoint : 'performance/raw?tests'
+test_ids: { 
+              websocket: ['12345'],
+              api : ['56789']         
+          }
+
+# get_logger  
+batch_size : 10
+log_file : 'app.log'
+log_level : 'debug'
