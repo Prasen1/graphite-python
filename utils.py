@@ -88,6 +88,11 @@ class Utils():
 
             }
 
+            if 'step' in value:
+                tag['step'] = value['step']
+            if 'hop_number' in value:
+                tag['hop_number'] = value['hop_number']
+
             values['tags'] = tag
 
             values['time_stamp'] = dp.parse(value['dimension']['name']).timestamp() # convert the timestamp from api response to epoch
@@ -107,7 +112,6 @@ class Utils():
         return final_list
 
 
-
     @staticmethod
 
     def insert_to_carbon(data): 
@@ -123,7 +127,6 @@ class Utils():
         """
 
 
-
         lines = []        
 
         try:
@@ -131,11 +134,15 @@ class Utils():
             for item in data:
 
                 for key in item['metrics']:
-
-                    lines.append("system.cp.testdata.{};testId={};nodeId={} {} {}".format(key, item['tags']['test_id'], item['tags']['node_id'], item['metrics'][key], item['time_stamp']))
+                    if 'step' in item['tags']:
+                        lines.append("system.cp.testdata.{};testId={};nodeId={};stepIndex={} {} {}".format(key, item['tags']['test_id'], item['tags']['node_id'], item['tags']['step'], item['metrics'][key], item['time_stamp']))
+                    elif 'hop_number' in item['tags']:
+                        lines.append("system.cp.testdata.{};testId={};nodeId={};hopNumber={} {} {}".format(key, item['tags']['test_id'], item['tags']['node_id'], item['tags']['hop_number'], item['metrics'][key], item['time_stamp']))
+                    else:
+                        lines.append("system.cp.testdata.{};testId={};nodeId={} {} {}".format(key, item['tags']['test_id'], item['tags']['node_id'], item['metrics'][key], item['time_stamp']))
 
             message = '\n'.join(lines) + '\n' #all lines must end in a newline
-
+            
             logger.info('Inserting data\n Number of series to update {}'.format(len(message)))
 
             Utils.sock.sendall(message.encode('utf-8')) # sends lines of data as socket message to carbon listener over TCP
