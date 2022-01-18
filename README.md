@@ -66,4 +66,4 @@ Run following commands in the directory /graphite-python
     ├── utils.py                    ##  utility fot parsing data, inserting it to Graphite and validating configurations
            
 
-Once the script starts running and data is inserted into Graphite, it can viewed via Graphite's Web UI.
+Once the script starts running and data is inserted into Graphite, it can be viewed via Graphite's Web UI.
