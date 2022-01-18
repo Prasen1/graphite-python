@@ -57,13 +57,13 @@ Run following commands in the directory /graphite-python
     ├── request_handler.py          ## Contains APIs related to authentication       
     ├── config
     | ├── config_catchpoint.yaml    ## Configuration file for Catchpoint 
-    | ├── config_graphite.yaml      ## Configuration file for InfluxDB 
+    | ├── config_graphite.yaml      ## Configuration file for Graphite
     ├── log
     | ├── app.log                   ## Contains informational and error logs. 
     ├── application.py              ## main file
     ├── log.py
     ├── request_handler.py          ## Contains API requests for token and raw endpoint 
-    ├── utils.py                    ##  utility fot partsing data, inserting it to influx and validating configurations
+    ├── utils.py                    ##  utility fot parsing data, inserting it to Graphite and validating configurations
            
 
 Once the script starts running and data is inserted into Graphite, it can viewed via Graphite's Web UI.
