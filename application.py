@@ -41,7 +41,7 @@ class Application(object):
                 if final_list:
                     utils.Utils.insert_to_carbon(final_list)
                 else:
-                    logger.info('No Test ID or Data. Ignoring batch')                
+                    logger.info('No Test ID/Data. Ignoring batch')                
 
         except Exception as e:
             logger.exception(str(e))
