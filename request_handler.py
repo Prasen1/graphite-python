@@ -1,24 +1,23 @@
 import requests,base64,sys
 import yaml,log
 import logger
-conf = yaml.safe_load(open('./config/config_catchpoint.yaml'))
+
+catchpoint_config = './config/config_catchpoint.yaml'
+conf = yaml.safe_load(open(catchpoint_config))
 logger = log.get_logger(__name__,conf['log_file'],conf['log_level'])
 
+# Authorise and fetch data from catchpoint api
 class Catchpoint(object):
+
+    # Basic init method
     def __init__(self):
-        """
-        Basic init method.
-        """
         self.auth = False
         self.token = None
         self.expires_in = None
         self.verbose = False 
 
+    # Debug output. Set self.verbose to True to enable.
     def debug(self, msg):
-        """
-        Debug output. Set self.verbose to True to enable.
-        """
-
         if self.verbose:
                 logger.info(str(msg))
 
@@ -26,12 +25,10 @@ class Catchpoint(object):
         msg = "Unable to reach {0}".format(e)
         sys.exit(msg)
         
+    # Request an auth token.
+    # creds :  Configuration file with requred credentails in key, value pair    
     def authorize(self,creds):
         logger.info("Getting authorization token")
-        """
-        Request an auth token.
-        creds :  Configuration file with requred credentails in key, value pair
-        """
         uri = '{0}://{1}/{2}'.format(creds['protocol'],creds['domain'],creds['token_endpoint'])     
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
         payload = {
@@ -45,7 +42,6 @@ class Catchpoint(object):
             response = requests.post(uri, headers=headers,data=payload,verify=False) 
         except Exception as e:
             logger.exception(str(e))
-
         data = response.json()
         if 'message' in data:
             logger.exception(data['message'])
@@ -57,11 +53,10 @@ class Catchpoint(object):
         ## 	the token is valid for 15 minutes
         ##
 
+    # Make a request with an auth token.
+    # creds :  Configuration file with requred credentails in key, value pair
+    # Returns an exception if authorization fails
     def fetch_data(self,creds):
-        """
-        Make a request with an auth token.
-        creds :  Configuration file with requred credentails in key, value pair
-        """
         logger.info("Calling API with the token")
         uri = '{0}://{1}/{2}/{3}={4}'.format(creds['protocol'],creds['domain'],creds['version'],creds['rawdata_endpoint'],creds['test_id_params'])
         payload = ""
@@ -89,13 +84,9 @@ class Catchpoint(object):
             return e
         return response_data    
 
+    # Determine whether the token is expired.
+    # data: The json data returned from the API call.
     def expired_token_check(self,data):
-            """
-            Determine whether the token is expired. While this check could
-            technically be performed before each request, it's easier to offload
-            retry logic onto the script using this class to avoid too many
-            req/min.
-            """
             if "Message" in data:
                 if data['Message'].find("Expired token") != -1:
                     self.debug("Token was expired and has been cleared, try again...")
