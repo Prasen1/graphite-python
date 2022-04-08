@@ -1,3 +1,4 @@
+#Logs all types of logs into a file and decides the type of log bases on the logging level
 import logging
 
 def get_logger(name,filename,level):
